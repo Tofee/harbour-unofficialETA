@@ -36,19 +36,51 @@ Page {
 
     property variant currentETA: TimerLogic.refreshETA();
     property real workProgress: 0;
+    property string statusString: "waiting..."
 
     Timer {
         id: _ETARefresh
+
+        interval: 10000
+        running: Qt.application.active
+        repeat: true
+        onTriggered: {
+            page.currentETA = TimerLogic.refreshETA();
+        }
+    }
+
+    Timer {
+        id: _ProgressRefresh
 
         interval: 3000
         running: Qt.application.active
         repeat: true
         onTriggered: {
-            page.currentETA = TimerLogic.refreshETA();
-
             workProgress = workProgress + 0.05*Math.random();
             if( workProgress>1.2 )
                 workProgress = 0.72;
+        }
+    }
+
+    ListModel {
+        id: statusStringList
+
+        ListElement { text: "waiting..." }
+        ListElement { text: "found something!" }
+        ListElement { text: "Hey ! what the" }
+        ListElement { text: "Soon(tm) arriving" }
+        ListElement { text: "just a moment, hold on" }
+    }
+
+    Timer {
+        id: _StatusRefresh
+
+        interval: 5000
+        running: Qt.application.active
+        repeat: true
+        onTriggered: {
+            var i = Math.floor(statusStringList.count*Math.random());
+            statusString = statusStringList.get(i).text;
         }
     }
 
@@ -134,6 +166,12 @@ Page {
 
                     NumberAnimation on width { duration: 1000 }
                 }
+            }
+            Label {
+                x: Theme.paddingLarge
+                text: page.statusString
+                color: Theme.secondaryHighlightColor
+                font.pixelSize: Theme.fontSizeExtraLarge
             }
         }
     }

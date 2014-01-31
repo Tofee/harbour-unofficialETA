@@ -62,25 +62,25 @@ Page {
         }
     }
 
-    ListModel {
+    JsonListModel {
         id: statusStringList
 
-        ListElement { text: "waiting..." }
-        ListElement { text: "found something!" }
-        ListElement { text: "Hey ! what the" }
-        ListElement { text: "Soon(tm) arriving" }
-        ListElement { text: "just a moment, hold on" }
+        jsonURL: "http://api.eta.denden.pw/getstatus.php"
+        onLoadCompleted: _StatusRefresh.start();
     }
 
     Timer {
         id: _StatusRefresh
 
         interval: 5000
-        running: Qt.application.active
+        running: false
         repeat: true
         onTriggered: {
-            var i = Math.floor(statusStringList.count*Math.random());
-            statusString = statusStringList.get(i).text;
+            if( statusStringList.count>0 ) {
+                var i = Math.floor(statusStringList.count*Math.random());
+                var statusItem = statusStringList.get(i);
+                page.statusString = statusItem.status + " ("+ statusItem.severity +")";
+            }
         }
     }
 
@@ -171,7 +171,7 @@ Page {
                 x: Theme.paddingLarge
                 text: page.statusString
                 color: Theme.secondaryHighlightColor
-                font.pixelSize: Theme.fontSizeExtraLarge
+                font.pixelSize: Theme.fontSizeSmall
             }
         }
     }

@@ -18,5 +18,6 @@ OTHER_FILES += qml/harbour-unofficialETA.qml \
     rpm/harbour-unofficialETA.spec \
     rpm/harbour-unofficialETA.yaml \
     harbour-unofficialETA.desktop \
-    qml/js/timerLogic.js
+    qml/js/timerLogic.js \
+    qml/pages/JsonListModel.qml
 
